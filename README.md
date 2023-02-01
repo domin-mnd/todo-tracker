@@ -1,5 +1,7 @@
 # Todo App
 
+![Todo App](/public/preview.png)
+
 This is a simple todo app built with Vue.js and Tailwind CSS.
 It uses local storage to store the todos.
 You can add, delete and mark todos as completed.
