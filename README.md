@@ -21,6 +21,7 @@ This project uses firebase therefore to run the project you need to setup a fire
 - Add firebase to your app - select "Web" to get started
 - Place firebase SDK credentials in `config.ts` (copy & paste `config.example.ts` & rename it)
 - Add authentication. There's only 1 provider to add - Google.
+- In authentication stepper select "Settings" & in "Authorized Domains" tab add your domain.
 - Setup cloud firestore - create the database.
 - In cloud firestore stepper select "Rules" & edit the following line: `allow read, write: if false;` to `allow read, write: if true;`
 - Done!
