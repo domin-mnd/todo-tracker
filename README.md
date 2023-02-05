@@ -2,9 +2,8 @@
 
 ![Todo App](/public/preview.png)
 
-This is a simple todo app built with Vue.js and Tailwind CSS.
-It uses local storage to store the todos.
-You can add, delete and mark todos as completed.
+This is a minimalistic CRUD Todo app built with Vue.js and Tailwind CSS.
+It uses firestore instead of local storage to store the todos.
 
 ## Project setup
 
@@ -14,6 +13,17 @@ npm install # or yarn
 npm run build # build the project
 npm run preview # start the project, you can provide --port & --host flags directly in package.json script
 ```
+
+## Firebase
+
+This project uses firebase therefore to run the project you need to setup a firebase project. To do that:
+- Add project
+- Add firebase to your app - select "Web" to get started
+- Place firebase SDK credentials in `config.ts` (copy & paste `config.example.ts` & rename it)
+- Add authentication. There's only 1 provider to add - Google.
+- Setup cloud firestore - create the database.
+- In cloud firestore stepper select "Rules" & edit the following line: `allow read, write: if false;` to `allow read, write: if true;`
+- Done!
 
 ## Colors
 

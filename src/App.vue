@@ -1,8 +1,9 @@
 <template>
-  <Todo />
+  <main ref="parent">
+    <RouterView />
+  </main>
 </template>
 <script setup lang="ts">
-// Asynchronous component
-import { defineAsyncComponent } from 'vue';
-const Todo = defineAsyncComponent(() => import('./components/Todo.vue'));
+import { useAutoAnimate } from '@formkit/auto-animate/vue';
+const [parent] = useAutoAnimate();
 </script>

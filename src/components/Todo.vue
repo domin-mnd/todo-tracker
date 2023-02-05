@@ -1,56 +1,45 @@
 <template>
-  <TodoForm @on-added="addTodo" class="selection:bg-tertiary-500">
-    <TodoList :todos="todos" @on-deleted="deleteTodo" @on-updated="updateTodo" />
+  <TodoForm @on-added="addTodo" class="selection:bg-tertiary-500 selection:text-white">
+    <TodoList :todos="(todos as Todo[])" @on-deleted="deleteTodo" @on-updated="updateTodo" />
   </TodoForm>
 </template>
 <script setup lang="ts">
-import { defineAsyncComponent, ref } from 'vue';
-const TodoForm = defineAsyncComponent(() => import('./TodoForm.vue'));
-const TodoList = defineAsyncComponent(() => import('./TodoList.vue'));
+import { getCurrentUser, useCollection, useFirestore } from 'vuefire';
+import { addDoc, collection, deleteDoc, doc, setDoc } from 'firebase/firestore';
+import TodoForm from './TodoForm.vue';
+import TodoList from './TodoList.vue';
 
-/** Todo object interface, is in localStorage */
-interface Todo {
-  /** Id of todo object */
-  id: number;
-  /** Text of todo object */
-  text: string;
-  /** Finished state of todo object */
-  finished: boolean;
-}
+const db = useFirestore();
+const user = await getCurrentUser();
+const todos = useCollection(collection(db, `/users/${user?.uid}/todos`));
 
-const todos = ref<Todo[]>(JSON.parse(localStorage.getItem("todo") || "[]"));
-
-/** Add a todo object in array and save it, empty string handling is in child's emit
- * @param {string} todo - text of todo object
+/**
+ * Add a todo object in array and save it, empty string handling is in child's emit
+ * @param {string} todo - Title of todo object
 */
-const addTodo = (todo: string) => {
-  todos.value = [...todos.value, {
-    id: todos.value.length + 1,
-    text: todo,
+const addTodo = async (todo: string) => {
+  await addDoc(collection(db, `/users/${user?.uid}/todos`), {
+    title: todo,
+    description: "",
     finished: false,
-  }];
-  localStorage.setItem("todo", JSON.stringify(todos.value));
+    createdAt: new Date(),
+  });
 };
 
-/** Update finished state
- * @param {number} id - id of todo object
+/**
+ * Update/modify todo information
+ * @param {Todo} todo - Todo to update
  */
-const updateTodo = (id: number) => {
-  todos.value = todos.value.map((item) => {
-    if (item.id === id) {
-      item.finished = !item.finished;
-    }
-    return item;
-  });
-  localStorage.setItem("todo", JSON.stringify(todos.value));
+const updateTodo = async (todo: Todo) => {
+  const todoRef = doc(db, `/users/${user?.uid}/todos`, todo.id);
+  setDoc(todoRef, todo, { merge: true });
 };
 
 /**
  * Delete todo object from array and save it
- * @param {number} id - id of todo object
+ * @param {Todo} todo - Todo to delete
  */
-const deleteTodo = (id: number) => {
-  todos.value = todos.value.filter((todo) => todo.id !== id);
-  localStorage.setItem("todo", JSON.stringify(todos.value));
+const deleteTodo = async (todo: Todo) => {
+  await deleteDoc(doc(db, `/users/${user?.uid}/todos`, todo.id));
 };
 </script>
